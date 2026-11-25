@@ -11,12 +11,17 @@ const connectDatabase = async () => {
   }
 
   if (mongoose.connection.readyState === 1) {
+    console.log("MongoDB already connected.");
     return mongoose.connection;
   }
 
   try {
+    console.log("Connecting to MongoDB...");
+
     const connection = await mongoose.connect(process.env.MONGODB_URI, {
       dbName: process.env.DB_NAME,
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
     });
 
     console.log(`MongoDB connected: ${connection.connection.host}`);

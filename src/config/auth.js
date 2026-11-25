@@ -17,7 +17,10 @@ const createAuth = () => {
     baseURL: process.env.BETTER_AUTH_URL,
     secret: process.env.BETTER_AUTH_SECRET,
 
-    trustedOrigins: [process.env.CLIENT_URL],
+    trustedOrigins: [
+      "http://localhost:3000",
+      "https://gearup-client-iota.vercel.app",
+    ],
 
     user: {
       additionalFields: {

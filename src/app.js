@@ -1,9 +1,15 @@
+
+import "dotenv/config";
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import { toNodeHandler } from "better-auth/node";
+
+import connectDatabase from "./config/database.js";
+import createAuth from "./config/auth.js";
 
 import errorMiddleware from "./middlewares/error.middleware.js";
 import notFoundMiddleware from "./middlewares/not-found.middleware.js";
@@ -22,10 +28,8 @@ const createApp = (auth) => {
     }),
   );
 
-  // Better Auth handler must run before body parsers.
   app.all("/api/auth/*splat", toNodeHandler(auth));
-  
-  // Stripe webhook must receive the raw request body.
+
   app.post(
     "/api/webhooks/stripe",
     express.raw({ type: "application/json" }),
@@ -56,4 +60,9 @@ const createApp = (auth) => {
   return app;
 };
 
-export default createApp;
+await connectDatabase();
+
+const auth = createAuth();
+const app = createApp(auth);
+
+export default app;
